@@ -1,11 +1,16 @@
 var OriginalRooms = [
   { x: 0, y: 0 },
-  { x: 3, y: 5 },
+  { x: 3, y: 4 },
   { x: 2, y: 2 },
   { x: 3, y: 3 },
   { x: 4, y: 4 },
   { x: 5, y: 5 },
-  { x: 6, y: 6 }
+  { x: 6, y: 6 },
+  { x: 1, y: 0, goal: true },
+  { x: 3, y: 0, goal: true },
+  { x: 5, y: 2, goal: true },
+  { x: 3, y: 6, goal: true },
+  { x: 6, y: 6, goal: true },
 ];
 
 
@@ -16,7 +21,12 @@ var Rooms = [
   { x: 3, y: 3 },
   { x: 4, y: 4 },
   { x: 5, y: 5 },
-  { x: 6, y: 6 }
+  { x: 6, y: 6 },
+  { x: 1, y: 0, goal: true },
+  { x: 3, y: 0, goal: true },
+  { x: 5, y: 2, goal: true },
+  { x: 3, y: 6, goal: true },
+  { x: 6, y: 6, goal: true },
 ];
 Rooms.startingRoom = 1;
 
@@ -29,8 +39,10 @@ Gameplay.prototype.placeRoomOnMap = function(roomIndex, x, y) {
   for (var xi = 0; xi < RoomSize.Width; xi++) {
     for (var yi = 0; yi < RoomSize.Height; yi++) {
       var tile = this.map.getTile(180 + xi, (roomIndex * RoomSize.Height) + yi, this.foreground);
-
       this.map.putTile(tile, x * RoomSize.Width + xi, y * RoomSize.Height + yi, this.foreground);
+
+      var tile2 = this.map.getTile(180 + xi, (roomIndex * RoomSize.Height) + yi, this.background);
+      this.map.putTile(tile2, x * RoomSize.Width + xi, y * RoomSize.Height + yi, this.background);
     }
   }
 };
@@ -65,13 +77,15 @@ Gameplay.prototype.initializeRoomsOnMap = function(reset) {
     }
   }
   Rooms.forEach(function (room, index) {
-    var blockTile = this.map.putTile(index === Rooms.startingRoom ? 5 : 7, BlockOffsetX + Rooms[Rooms.startingRoom].x * RoomSize.Width + room.x, BlockOffsetY + Rooms[Rooms.startingRoom].y * RoomSize.Height + room.y, this.foreground);
+    var blockTile = this.map.putTile((index === Rooms.startingRoom || room.goal) ? 5 : 7, BlockOffsetX + Rooms[Rooms.startingRoom].x * RoomSize.Width + room.x, BlockOffsetY + Rooms[Rooms.startingRoom].y * RoomSize.Height + room.y, this.foreground);
     blockTile.roomIndex = index;
   }, this);
 };
 Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
   var data = this.map.copy(180, roomIndex * RoomSize.Height, RoomSize.Width, RoomSize.Height, this.foreground);
   this.map.paste(destX * RoomSize.Width, destY * RoomSize.Height, data, this.foreground);
+  var bgData = this.map.copy(180, roomIndex * RoomSize.Height, RoomSize.Width, RoomSize.Height, this.background);
+  this.map.paste(destX * RoomSize.Width, destY * RoomSize.Height, bgData, this.background);
   Rooms[roomIndex].x = destX;
   Rooms[roomIndex].y = destY;
 
@@ -251,10 +265,13 @@ Gameplay.prototype.create = function() {
 };
 Gameplay.prototype.update = function () {
   this.game.physics.arcade.collide(this.player, this.foreground, undefined, function (player, tile) {
+    var topCornerX = Rooms[Rooms.startingRoom].x * RoomSize.Width + BlockOffsetX;
+    var topCornerY = Rooms[Rooms.startingRoom].y * RoomSize.Height + BlockOffsetY;
+
     if (tile.index === 7) {
       // push right
       if (player.x < tile.worldX && player.body.velocity.x > 0) {
-        if (this.map.getTile(tile.x + 1, tile.y, this.foreground) === null) {
+        if (this.map.getTile(tile.x + 1, tile.y, this.foreground) === null && ((tile.x + 1) <= (topCornerX + 6))) {
           var newTile = this.map.putTile(7, tile.x + 1, tile.y, this.foreground);
           newTile.roomIndex = tile.roomIndex;
           this.map.removeTile(tile.x, tile.y, this.foreground);
@@ -267,7 +284,7 @@ Gameplay.prototype.update = function () {
 
       // push left
       if (player.x > tile.worldX && player.body.velocity.x < 0) {
-        if (this.map.getTile(tile.x - 1, tile.y, this.foreground) === null) {
+        if (this.map.getTile(tile.x - 1, tile.y, this.foreground) === null && (tile.x - 1 >= topCornerX)) {
           var newTile = this.map.putTile(7, tile.x - 1, tile.y, this.foreground);
           newTile.roomIndex = tile.roomIndex;
           this.map.removeTile(tile.x, tile.y, this.foreground);
@@ -280,7 +297,7 @@ Gameplay.prototype.update = function () {
 
       // push down
       if (player.y < tile.worldY && player.body.velocity.y > 0) {
-        if (this.map.getTile(tile.x, tile.y + 1, this.foreground) === null) {
+        if (this.map.getTile(tile.x, tile.y + 1, this.foreground) === null && ((tile.y + 1) <= (topCornerY + 6))) {
           var newTile = this.map.putTile(7, tile.x, tile.y + 1, this.foreground);
           newTile.roomIndex = tile.roomIndex;
           this.map.removeTile(tile.x, tile.y, this.foreground);
@@ -293,7 +310,7 @@ Gameplay.prototype.update = function () {
 
       // push up
       if (player.y > tile.worldY && player.body.velocity.y < 0) {
-        if (this.map.getTile(tile.x, tile.y - 1, this.foreground) === null) {
+        if (this.map.getTile(tile.x, tile.y - 1, this.foreground) === null && (tile.y - 1 >= topCornerY)) {
           var newTile = this.map.putTile(7, tile.x, tile.y - 1, this.foreground);
           newTile.roomIndex = tile.roomIndex;
           this.map.removeTile(tile.x, tile.y, this.foreground);
