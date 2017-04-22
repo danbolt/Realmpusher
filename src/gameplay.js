@@ -42,6 +42,19 @@ Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
   Rooms[roomIndex].y = destY;
 };
 
+Gameplay.prototype.tweenCameraToPlayersRoom = function (x, y) {
+  var t = this.game.add.tween(this.game.camera);
+  t.to({ x: (16 * RoomSize.Width * x), y: (16 * RoomSize.Height * y) }, 300);
+  t.onComplete.add(function () { this.scrolling = false; this.player.disableMovement = false; }, this);
+  t.start();
+};
+Gameplay.prototype.getRoomXFromWorldX = function(x) {
+  return ~~((x / 16) / RoomSize.Width);
+};
+Gameplay.prototype.getRoomYFromWorldY = function(y) {
+  return ~~((y / 16) / RoomSize.Height);
+};
+
 Gameplay.prototype.init = function() {
   //
 };
@@ -67,14 +80,24 @@ Gameplay.prototype.create = function() {
 
   this.initializeRoomsOnMap();
 
-  this.player = this.game.add.existing(new Player(this.game, 16 * Rooms[Rooms.startingRoom].x * RoomSize.Width, 16 * Rooms[Rooms.startingRoom].y * RoomSize.Height));
+  this.player = this.game.add.existing(new Player(this.game, 16 * Rooms[Rooms.startingRoom].x * RoomSize.Width + (RoomSize.Width * 16 / 2), 16 * Rooms[Rooms.startingRoom].y * RoomSize.Height + (RoomSize.Width * 16 / 2)));
+  this.scrolling = false;
 
-  // temp camera following
-  this.game.camera.follow(this.player);
   this.game.camera.bounds = null;
+  this.game.camera.setPosition(this.getRoomXFromWorldX(this.player.x) * RoomSize.Width * 16, this.getRoomYFromWorldY(this.player.y) * RoomSize.Height * 16);
+  // temp camera following
+  //this.game.camera.follow(this.player);
+  //this.game.camera.bounds = null;
 };
 Gameplay.prototype.update = function () {
   this.game.physics.arcade.collide(this.player, this.foreground);
+
+  if (this.scrolling === false && this.game.camera.view.contains(this.player.x, this.player.y) === false) {
+    this.scrolling = true;
+    this.player.disableMovement = true;
+
+    this.tweenCameraToPlayersRoom(this.getRoomXFromWorldX(this.player.x), this.getRoomYFromWorldY(this.player.y));
+  }
 };
 Gameplay.prototype.shutdown = function () {
   this.player = null;
