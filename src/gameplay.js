@@ -1,3 +1,14 @@
+var Rooms = [
+  { x: 0, y: 0 },
+  { x: 3, y: 5 },
+  { x: 2, y: 2 },
+  { x: 3, y: 3 },
+  { x: 4, y: 4 },
+  { x: 5, y: 5 },
+  { x: 6, y: 6 }
+];
+
+
 var Gameplay = function () {
   this.player = null;
 };
@@ -17,6 +28,17 @@ Gameplay.prototype.clearRoomOnArea = function(x, y) {
       this.map.removeTile(x * RoomSize.Width + xi, y * RoomSize.Height + yi, this.foreground);
     }
   }
+};
+Gameplay.prototype.initializeRoomsOnMap = function() {
+  Rooms.forEach(function (room, index) {
+    this.placeRoomOnMap(index, room.x, room.y);
+  }, this);
+};
+Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
+  this.clearRoomOnArea(Rooms[roomIndex].x, Rooms[roomIndex].y);
+  this.placeRoomOnMap(roomIndex, destX, destY);
+  Rooms[roomIndex].x = destX;
+  Rooms[roomIndex].y = destY;
 };
 
 Gameplay.prototype.init = function() {
@@ -42,9 +64,7 @@ Gameplay.prototype.create = function() {
   // enable collision detections with map
   this.game.physics.enable(this.foreground, Phaser.Physics.ARCADE);
 
-  this.placeRoomOnMap(0, 2, 2);
-  this.placeRoomOnMap(8, 1, 5);
-  this.clearRoomOnArea(2, 2);
+  this.initializeRoomsOnMap();
 };
 Gameplay.prototype.update = function () {
   //
