@@ -21,3 +21,6 @@ var soundEffectsToLoad = ['alarm',
                           */
 
 var SoundBank = {};
+
+var RoomSize = { Width: 20, Height: 15 };
+var MarginX = 180;
