@@ -1,16 +1,16 @@
 var OriginalRooms = [
-  { x: 2, y: 1 },
-  { x: 3, y: 3 },
-  { x: 2, y: 2 },
-  { x: 5, y: 5 },
-  { x: 0, y: 2 },
-  { x: 5, y: 1 },
-  { x: 1, y: 5 },
-  { x: 1, y: 0, goal: true },
-  { x: 3, y: 0, goal: true },
-  { x: 5, y: 2, goal: true },
-  { x: 3, y: 5, goal: true },
-  { x: 5, y: 5, goal: true },
+  { x: 2, y: 1, doors: [false, true, false, true] },
+  { x: 3, y: 3, doors: [true, true, true, true] },
+  { x: 2, y: 2, doors: [false, true, false, true] },
+  { x: 5, y: 5, doors: [false, true, true, false] },
+  { x: 0, y: 2, doors: [false, true, true, false] },
+  { x: 5, y: 1, doors: [true, true, false, false] },
+  { x: 1, y: 5, doors: [true, false, false, true] },
+  { x: 1, y: 0, goal: true, doors: [true, false, false, false] },
+  { x: 3, y: 0, goal: true, doors: [false, true, false, false] },
+  { x: 5, y: 2, goal: true, doors: [false, false, true, false] },
+  { x: 3, y: 5, goal: true, doors: [false, false, true, false] },
+  { x: 5, y: 5, goal: true, doors: [false, false, true, false] },
 ];
 
 
@@ -58,6 +58,7 @@ Gameplay.prototype.initializeRoomsOnMap = function(reset) {
   for (var i = 0; i < OriginalRooms.length; i++) {
     Rooms[i].x = OriginalRooms[i].x;
     Rooms[i].y = OriginalRooms[i].y;
+    Rooms[i].doors = OriginalRooms[i].doors;
   }
 
   if (reset) {
@@ -167,7 +168,7 @@ Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
 
     Rooms.forEach(function (otherRoom, otherIndex) {
       // check east doors
-      if (room.x + 1 === otherRoom.x && room.y === otherRoom.y) {
+      if (room.x + 1 === otherRoom.x && room.y === otherRoom.y && (room.doors[Directions.EAST] && otherRoom.doors[Directions.WEST])) {
         openDoor.call(this, index, Directions.EAST);
         openDoor.call(this, otherIndex, Directions.WEST);
 
@@ -175,7 +176,7 @@ Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
       }
 
       // check west doors
-      if (room.x - 1 === otherRoom.x && room.y === otherRoom.y) {
+      if (room.x - 1 === otherRoom.x && room.y === otherRoom.y && (room.doors[Directions.WEST] && otherRoom.doors[Directions.EAST])) {
         openDoor.call(this, index, Directions.WEST);
         openDoor.call(this, otherIndex, Directions.EAST);
 
@@ -183,7 +184,7 @@ Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
       }
 
       // check south doors
-      if (room.x === otherRoom.x && room.y + 1 === otherRoom.y) {
+      if (room.x === otherRoom.x && room.y + 1 === otherRoom.y && (room.doors[Directions.SOUTH] && otherRoom.doors[Directions.NORTH])) {
         openDoor.call(this, index, Directions.SOUTH);
         openDoor.call(this, otherIndex, Directions.NORTH);
 
@@ -191,7 +192,7 @@ Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
       }
 
       // check north doors
-      if (room.x === otherRoom.x && room.y - 1 === otherRoom.y) {
+      if (room.x === otherRoom.x && room.y - 1 === otherRoom.y && (room.doors[Directions.NORTH] && otherRoom.doors[Directions.SOUTH])) {
         openDoor.call(this, index, Directions.NORTH);
         openDoor.call(this, otherIndex, Directions.SOUTH);
 
