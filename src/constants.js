@@ -24,3 +24,6 @@ var SoundBank = {};
 
 var RoomSize = { Width: 20, Height: 15 };
 var MarginX = 180;
+
+var BlockOffsetX = 2;
+var BlockOffsetY = 2;

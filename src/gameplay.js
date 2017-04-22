@@ -12,7 +12,6 @@ Rooms.startingRoom = 1;
 
 var Gameplay = function () {
   this.player = null;
-  this.roomBlocks = [];
 };
 
 Gameplay.prototype.placeRoomOnMap = function(roomIndex, x, y) {
@@ -81,19 +80,71 @@ Gameplay.prototype.create = function() {
 
   this.initializeRoomsOnMap();
 
+  Rooms.forEach(function (room, index) {
+    var blockTile = this.map.putTile(index === Rooms.startingRoom ? 5 : 7, BlockOffsetX + Rooms[Rooms.startingRoom].x * RoomSize.Width + room.x, BlockOffsetY + Rooms[Rooms.startingRoom].y * RoomSize.Height + room.y, this.foreground);
+    blockTile.roomIndex = index;
+  }, this);
+
   this.player = this.game.add.existing(new Player(this.game, 16 * Rooms[Rooms.startingRoom].x * RoomSize.Width + (RoomSize.Width * 16 / 2), 16 * Rooms[Rooms.startingRoom].y * RoomSize.Height + (RoomSize.Width * 16 / 2)));
   this.scrolling = false;
-
-  this.roomBlocks = [];
-  var testRoomBlock = this.game.add.existing(new RoomBlock(this.game, 16 * Rooms[Rooms.startingRoom].x * RoomSize.Width + 128, 16 * Rooms[Rooms.startingRoom].y * RoomSize.Height + 128, 1));
-  this.roomBlocks.push(testRoomBlock);
 
   this.game.camera.bounds = null;
   this.game.camera.setPosition(this.getRoomXFromWorldX(this.player.x) * RoomSize.Width * 16, this.getRoomYFromWorldY(this.player.y) * RoomSize.Height * 16);
 };
 Gameplay.prototype.update = function () {
-  this.game.physics.arcade.collide(this.player, this.foreground);
-  this.game.physics.arcade.collide(this.player, this.roomBlocks);
+  this.game.physics.arcade.collide(this.player, this.foreground, undefined, function (player, tile) {
+    if (tile.index === 7) {
+      // push right
+      if (player.x < tile.worldX && player.body.velocity.x > 0) {
+        if (this.map.getTile(tile.x + 1, tile.y, this.foreground) === null) {
+          var newTile = this.map.putTile(7, tile.x + 1, tile.y, this.foreground);
+          newTile.roomIndex = tile.roomIndex;
+          this.map.removeTile(tile.x, tile.y, this.foreground);
+          this.moveRoom(tile.roomIndex, Rooms[tile.roomIndex].x + 1, Rooms[tile.roomIndex].y);
+
+          return false;
+        }
+      }
+
+      // push left
+      if (player.x > tile.worldX && player.body.velocity.x < 0) {
+        if (this.map.getTile(tile.x - 1, tile.y, this.foreground) === null) {
+          var newTile = this.map.putTile(7, tile.x - 1, tile.y, this.foreground);
+          newTile.roomIndex = tile.roomIndex;
+          this.map.removeTile(tile.x, tile.y, this.foreground);
+          this.moveRoom(tile.roomIndex, Rooms[tile.roomIndex].x - 1, Rooms[tile.roomIndex].y);
+
+          return false;
+        }
+      }
+
+      // push down
+      if (player.y < tile.worldY && player.body.velocity.y > 0) {
+        if (this.map.getTile(tile.x, tile.y + 1, this.foreground) === null) {
+          var newTile = this.map.putTile(7, tile.x, tile.y + 1, this.foreground);
+          newTile.roomIndex = tile.roomIndex;
+          this.map.removeTile(tile.x, tile.y, this.foreground);
+          this.moveRoom(tile.roomIndex, Rooms[tile.roomIndex].x, Rooms[tile.roomIndex].y + 1);
+
+          return false;
+        }
+      }
+
+      // push up
+      if (player.y > tile.worldY && player.body.velocity.y < 0) {
+        if (this.map.getTile(tile.x, tile.y - 1, this.foreground) === null) {
+          var newTile = this.map.putTile(7, tile.x, tile.y - 1, this.foreground);
+          newTile.roomIndex = tile.roomIndex;
+          this.map.removeTile(tile.x, tile.y, this.foreground);
+          this.moveRoom(tile.roomIndex, Rooms[tile.roomIndex].x, Rooms[tile.roomIndex].y - 1);
+
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }, this);
 
   if (this.scrolling === false && this.game.camera.view.contains(this.player.x, this.player.y) === false) {
     this.scrolling = true;
@@ -104,5 +155,4 @@ Gameplay.prototype.update = function () {
 };
 Gameplay.prototype.shutdown = function () {
   this.player = null;
-  this.roomBlocks = null;
 };
