@@ -101,6 +101,7 @@ Gameplay.prototype.update = function () {
           newTile.roomIndex = tile.roomIndex;
           this.map.removeTile(tile.x, tile.y, this.foreground);
           this.moveRoom(tile.roomIndex, Rooms[tile.roomIndex].x + 1, Rooms[tile.roomIndex].y);
+          this.game.camera.shake(0.008, 250);
 
           return false;
         }
@@ -113,6 +114,7 @@ Gameplay.prototype.update = function () {
           newTile.roomIndex = tile.roomIndex;
           this.map.removeTile(tile.x, tile.y, this.foreground);
           this.moveRoom(tile.roomIndex, Rooms[tile.roomIndex].x - 1, Rooms[tile.roomIndex].y);
+          this.game.camera.shake(0.008, 250);
 
           return false;
         }
@@ -125,6 +127,7 @@ Gameplay.prototype.update = function () {
           newTile.roomIndex = tile.roomIndex;
           this.map.removeTile(tile.x, tile.y, this.foreground);
           this.moveRoom(tile.roomIndex, Rooms[tile.roomIndex].x, Rooms[tile.roomIndex].y + 1);
+          this.game.camera.shake(0.008, 250);
 
           return false;
         }
@@ -137,6 +140,7 @@ Gameplay.prototype.update = function () {
           newTile.roomIndex = tile.roomIndex;
           this.map.removeTile(tile.x, tile.y, this.foreground);
           this.moveRoom(tile.roomIndex, Rooms[tile.roomIndex].x, Rooms[tile.roomIndex].y - 1);
+          this.game.camera.shake(0.008, 250);
 
           return false;
         }
