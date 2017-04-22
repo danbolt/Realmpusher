@@ -1,3 +1,14 @@
+var OriginalRooms = [
+  { x: 0, y: 0 },
+  { x: 3, y: 5 },
+  { x: 2, y: 2 },
+  { x: 3, y: 3 },
+  { x: 4, y: 4 },
+  { x: 5, y: 5 },
+  { x: 6, y: 6 }
+];
+
+
 var Rooms = [
   { x: 0, y: 0 },
   { x: 3, y: 5 },
@@ -30,9 +41,32 @@ Gameplay.prototype.clearRoomOnArea = function(x, y) {
     }
   }
 };
-Gameplay.prototype.initializeRoomsOnMap = function() {
+Gameplay.prototype.initializeRoomsOnMap = function(reset) {
+  // reset all rooms
+  for (var i = 0; i < OriginalRooms.length; i++) {
+    Rooms[i].x = OriginalRooms[i].x;
+    Rooms[i].y = OriginalRooms[i].y;
+  }
+
+  if (reset) {
+    this.placeRoomOnMap(Rooms.startingRoom, Rooms[Rooms.startingRoom].x, Rooms[Rooms.startingRoom].y);
+
+    this.game.camera.shake(0.008, 350);
+  } else {
+    Rooms.forEach(function (room, index) {
+      this.placeRoomOnMap(index, room.x, room.y);
+    }, this);
+  }
+
+
+  for (var xi = 0; xi < 6; xi++) {
+    for (var yi = 0; yi < 6; yi++) {
+      this.map.removeTile(BlockOffsetX + Rooms[Rooms.startingRoom].x * RoomSize.Width + xi, BlockOffsetY + Rooms[Rooms.startingRoom].y * RoomSize.Height + yi, this.foreground);
+    }
+  }
   Rooms.forEach(function (room, index) {
-    this.placeRoomOnMap(index, room.x, room.y);
+    var blockTile = this.map.putTile(index === Rooms.startingRoom ? 5 : 7, BlockOffsetX + Rooms[Rooms.startingRoom].x * RoomSize.Width + room.x, BlockOffsetY + Rooms[Rooms.startingRoom].y * RoomSize.Height + room.y, this.foreground);
+    blockTile.roomIndex = index;
   }, this);
 };
 Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
@@ -198,16 +232,22 @@ Gameplay.prototype.create = function() {
 
   this.initializeRoomsOnMap();
 
-  Rooms.forEach(function (room, index) {
-    var blockTile = this.map.putTile(index === Rooms.startingRoom ? 5 : 7, BlockOffsetX + Rooms[Rooms.startingRoom].x * RoomSize.Width + room.x, BlockOffsetY + Rooms[Rooms.startingRoom].y * RoomSize.Height + room.y, this.foreground);
-    blockTile.roomIndex = index;
-  }, this);
-
   this.player = this.game.add.existing(new Player(this.game, 16 * Rooms[Rooms.startingRoom].x * RoomSize.Width + (RoomSize.Width * 16 / 2), 16 * Rooms[Rooms.startingRoom].y * RoomSize.Height + (RoomSize.Width * 16 / 2)));
   this.scrolling = false;
 
   this.game.camera.bounds = null;
   this.game.camera.setPosition(this.getRoomXFromWorldX(this.player.x) * RoomSize.Width * 16, this.getRoomYFromWorldY(this.player.y) * RoomSize.Height * 16);
+
+  // Allow the player to reset  the map if we're in the starting room
+  var resetKey = this.game.input.keyboard.addKey(Phaser.KeyCode.R);
+  resetKey.onDown.add(function () {
+    if ((this.player.x >= (Rooms[Rooms.startingRoom].x * RoomSize.Width * 16)) && 
+        (this.player.x < ((Rooms[Rooms.startingRoom].x + 1) * RoomSize.Width * 16)) && 
+        (this.player.y >= (Rooms[Rooms.startingRoom].y * RoomSize.Height * 16)) && 
+        (this.player.y < ((Rooms[Rooms.startingRoom].y + 1) * RoomSize.Height * 16))) {
+      this.initializeRoomsOnMap(true);
+    }
+  }, this);
 };
 Gameplay.prototype.update = function () {
   this.game.physics.arcade.collide(this.player, this.foreground, undefined, function (player, tile) {
