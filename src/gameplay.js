@@ -36,10 +36,128 @@ Gameplay.prototype.initializeRoomsOnMap = function() {
   }, this);
 };
 Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
-  var data = this.map.copy(Rooms[roomIndex].x * RoomSize.Width, Rooms[roomIndex].y * RoomSize.Height, RoomSize.Width, RoomSize.Height, this.foreground);
+  var data = this.map.copy(180, roomIndex * RoomSize.Height, RoomSize.Width, RoomSize.Height, this.foreground);
   this.map.paste(destX * RoomSize.Width, destY * RoomSize.Height, data, this.foreground);
   Rooms[roomIndex].x = destX;
   Rooms[roomIndex].y = destY;
+
+  var openDoor = function(index, direction) {
+    var room = Rooms[index];
+
+    if (direction === Directions.EAST) {
+      for (var iy = 0; iy < RoomSize.Height; iy++) {
+        if (this.map.getTile(room.x * (RoomSize.Width) + (RoomSize.Width - 1), room.y * RoomSize.Height + iy, this.foreground, true).index === 8) {
+          this.map.removeTile(room.x * (RoomSize.Width) + (RoomSize.Width - 1), room.y * RoomSize.Height + iy, this.foreground);
+        }
+      }
+    }
+
+    if (direction === Directions.WEST) {
+      for (var iy = 0; iy < RoomSize.Height; iy++) {
+        if (this.map.getTile(room.x * RoomSize.Width, room.y * RoomSize.Height + iy, this.foreground, true).index === 8) {
+          this.map.removeTile(room.x * RoomSize.Width, room.y * RoomSize.Height + iy, this.foreground);
+        }
+      }
+    }
+
+    if (direction === Directions.SOUTH) {
+      for (var ix = 0; ix < RoomSize.Width; ix++) {
+        if (this.map.getTile(room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height) + (RoomSize.Height - 1), this.foreground, true).index === 8) {
+          this.map.removeTile(room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height) + (RoomSize.Height - 1), this.foreground);
+        }
+      }
+    }
+
+    if (direction === Directions.NORTH) {
+      for (var ix = 0; ix < RoomSize.Width; ix++) {
+        if (this.map.getTile(room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height), this.foreground, true).index === 8) {
+          this.map.removeTile(room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height), this.foreground);
+        }
+      }
+    }
+  };
+
+  var closeDoor = function(index, direction) {
+    var room = Rooms[index];
+
+    if (direction === Directions.EAST) {
+      for (var iy = 0; iy < RoomSize.Height; iy++) {
+        if (this.map.getTile(room.x * (RoomSize.Width) + (RoomSize.Width - 1), room.y * RoomSize.Height + iy, this.foreground, true).index === -1) {
+          this.map.putTile(8, room.x * (RoomSize.Width) + (RoomSize.Width - 1), room.y * RoomSize.Height + iy, this.foreground);
+        }
+      }
+    }
+
+    if (direction === Directions.WEST) {
+      for (var iy = 0; iy < RoomSize.Height; iy++) {
+        if (this.map.getTile(room.x * RoomSize.Width, room.y * RoomSize.Height + iy, this.foreground, true).index === -1) {
+          this.map.putTile(8, room.x * RoomSize.Width, room.y * RoomSize.Height + iy, this.foreground);
+        }
+      }
+    }
+
+    if (direction === Directions.SOUTH) {
+      for (var ix = 0; ix < RoomSize.Width; ix++) {
+        if (this.map.getTile(room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height) + (RoomSize.Height - 1), this.foreground, true).index === -1) {
+          this.map.putTile(8, room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height) + (RoomSize.Height - 1), this.foreground);
+        }
+      }
+    }
+
+    if (direction === Directions.NORTH) {
+      for (var ix = 0; ix < RoomSize.Width; ix++) {
+        if (this.map.getTile(room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height), this.foreground, true).index === -1) {
+          this.map.putTile(8, room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height), this.foreground);
+        }
+      }
+    }
+  };
+
+  // Open/close doors that are necessary for the new construction
+  Rooms.forEach(function (room, index) {
+    var opened = [false, false, false, false];
+
+    Rooms.forEach(function (otherRoom, otherIndex) {
+      // check east doors
+      if (room.x + 1 === otherRoom.x && room.y === otherRoom.y) {
+        openDoor.call(this, index, Directions.EAST);
+        openDoor.call(this, otherIndex, Directions.WEST);
+
+        opened[Directions.EAST] = true;
+      }
+
+      // check west doors
+      if (room.x - 1 === otherRoom.x && room.y === otherRoom.y) {
+        openDoor.call(this, index, Directions.WEST);
+        openDoor.call(this, otherIndex, Directions.EAST);
+
+        opened[Directions.WEST] = true;
+      }
+
+      // check south doors
+      if (room.x === otherRoom.x && room.y + 1 === otherRoom.y) {
+        openDoor.call(this, index, Directions.SOUTH);
+        openDoor.call(this, otherIndex, Directions.NORTH);
+
+        opened[Directions.SOUTH] = true;
+      }
+
+      // check north doors
+      if (room.x === otherRoom.x && room.y - 1 === otherRoom.y) {
+        openDoor.call(this, index, Directions.NORTH);
+        openDoor.call(this, otherIndex, Directions.SOUTH);
+
+        opened[Directions.NORTH] = true;
+      }
+    }, this);
+
+    // close any doors that were opened
+    for (var i = 0; i < Directions.COUNT; i++) {
+      if (opened[i] === false) {
+        closeDoor.call(this, index, i);
+      }
+    }
+  }, this);
 };
 
 Gameplay.prototype.tweenCameraToPlayersRoom = function (x, y) {
