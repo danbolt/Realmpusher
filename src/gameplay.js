@@ -12,6 +12,7 @@ Rooms.startingRoom = 1;
 
 var Gameplay = function () {
   this.player = null;
+  this.roomBlocks = [];
 };
 
 Gameplay.prototype.placeRoomOnMap = function(roomIndex, x, y) {
@@ -83,14 +84,16 @@ Gameplay.prototype.create = function() {
   this.player = this.game.add.existing(new Player(this.game, 16 * Rooms[Rooms.startingRoom].x * RoomSize.Width + (RoomSize.Width * 16 / 2), 16 * Rooms[Rooms.startingRoom].y * RoomSize.Height + (RoomSize.Width * 16 / 2)));
   this.scrolling = false;
 
+  this.roomBlocks = [];
+  var testRoomBlock = this.game.add.existing(new RoomBlock(this.game, 16 * Rooms[Rooms.startingRoom].x * RoomSize.Width + 128, 16 * Rooms[Rooms.startingRoom].y * RoomSize.Height + 128, 1));
+  this.roomBlocks.push(testRoomBlock);
+
   this.game.camera.bounds = null;
   this.game.camera.setPosition(this.getRoomXFromWorldX(this.player.x) * RoomSize.Width * 16, this.getRoomYFromWorldY(this.player.y) * RoomSize.Height * 16);
-  // temp camera following
-  //this.game.camera.follow(this.player);
-  //this.game.camera.bounds = null;
 };
 Gameplay.prototype.update = function () {
   this.game.physics.arcade.collide(this.player, this.foreground);
+  this.game.physics.arcade.collide(this.player, this.roomBlocks);
 
   if (this.scrolling === false && this.game.camera.view.contains(this.player.x, this.player.y) === false) {
     this.scrolling = true;
@@ -101,4 +104,5 @@ Gameplay.prototype.update = function () {
 };
 Gameplay.prototype.shutdown = function () {
   this.player = null;
+  this.roomBlocks = null;
 };
