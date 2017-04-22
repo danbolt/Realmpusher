@@ -36,8 +36,8 @@ Gameplay.prototype.initializeRoomsOnMap = function() {
   }, this);
 };
 Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
-  this.clearRoomOnArea(Rooms[roomIndex].x, Rooms[roomIndex].y);
-  this.placeRoomOnMap(roomIndex, destX, destY);
+  var data = this.map.copy(Rooms[roomIndex].x * RoomSize.Width, Rooms[roomIndex].y * RoomSize.Height, RoomSize.Width, RoomSize.Height, this.foreground);
+  this.map.paste(destX * RoomSize.Width, destY * RoomSize.Height, data, this.foreground);
   Rooms[roomIndex].x = destX;
   Rooms[roomIndex].y = destY;
 };
