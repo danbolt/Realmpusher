@@ -7,6 +7,7 @@ var Rooms = [
   { x: 5, y: 5 },
   { x: 6, y: 6 }
 ];
+Rooms.startingRoom = 1;
 
 
 var Gameplay = function () {
@@ -65,9 +66,15 @@ Gameplay.prototype.create = function() {
   this.game.physics.enable(this.foreground, Phaser.Physics.ARCADE);
 
   this.initializeRoomsOnMap();
+
+  this.player = this.game.add.existing(new Player(this.game, 16 * Rooms[Rooms.startingRoom].x * RoomSize.Width, 16 * Rooms[Rooms.startingRoom].y * RoomSize.Height));
+
+  // temp camera following
+  this.game.camera.follow(this.player);
+  this.game.camera.bounds = null;
 };
 Gameplay.prototype.update = function () {
-  //
+  this.game.physics.arcade.collide(this.player, this.foreground);
 };
 Gameplay.prototype.shutdown = function () {
   this.player = null;
