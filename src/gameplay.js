@@ -253,7 +253,12 @@ Gameplay.prototype.create = function() {
 
   this.initializeRoomsOnMap();
 
-  this.player = this.game.add.existing(new Player(this.game, 16 * Rooms[Rooms.startingRoom].x * RoomSize.Width + (RoomSize.Width * 16 / 2), 16 * Rooms[Rooms.startingRoom].y * RoomSize.Height + (RoomSize.Width * 16 / 2)));
+  this.resetInfoText = this.game.add.bitmapText( 16 * Rooms[Rooms.startingRoom].x * RoomSize.Width + this.game.width / 2, 16 * Rooms[Rooms.startingRoom].y * RoomSize.Height + this.game.height / 4 * 3 + 8, 'font', 'press r to reset room positions', 8);
+  this.resetInfoText.align = 'center';
+  this.resetInfoText.anchor.x = 0.5;
+  this.resetInfoText.visible = false;
+
+  this.player = this.game.add.existing(new Player(this.game, 16 * Rooms[Rooms.startingRoom].x * RoomSize.Width + (RoomSize.Width * 16 / 4 * 3), 16 * Rooms[Rooms.startingRoom].y * RoomSize.Height + (RoomSize.Height * 16 / 2)));
   this.scrolling = false;
 
   this.game.camera.bounds = null;
@@ -262,11 +267,14 @@ Gameplay.prototype.create = function() {
   // Allow the player to reset  the map if we're in the starting room
   var resetKey = this.game.input.keyboard.addKey(Phaser.KeyCode.R);
   resetKey.onDown.add(function () {
-    if ((this.player.x >= (Rooms[Rooms.startingRoom].x * RoomSize.Width * 16)) && 
-        (this.player.x < ((Rooms[Rooms.startingRoom].x + 1) * RoomSize.Width * 16)) && 
-        (this.player.y >= (Rooms[Rooms.startingRoom].y * RoomSize.Height * 16)) && 
-        (this.player.y < ((Rooms[Rooms.startingRoom].y + 1) * RoomSize.Height * 16))) {
+    if ((this.player.x >= (Rooms[Rooms.startingRoom].x * RoomSize.Width * 16) + 32) && 
+        (this.player.x < ((Rooms[Rooms.startingRoom].x + 1) * RoomSize.Width * 16) - 32) && 
+        (this.player.y >= (Rooms[Rooms.startingRoom].y * RoomSize.Height * 16) + 32) && 
+        (this.player.y < ((Rooms[Rooms.startingRoom].y + 1) * RoomSize.Height * 16) - 32)) {
       this.initializeRoomsOnMap(true);
+      this.resetInfoText.visible = false;
+
+      this.game.camera.shake(0.008, 250);
     }
   }, this);
 };
@@ -284,6 +292,7 @@ Gameplay.prototype.update = function () {
           this.map.removeTile(tile.x, tile.y, this.foreground);
           this.moveRoom(tile.roomIndex, Rooms[tile.roomIndex].x + 1, Rooms[tile.roomIndex].y);
           this.game.camera.shake(0.008, 250);
+          this.resetInfoText.visible = true;
 
           return false;
         }
@@ -297,6 +306,7 @@ Gameplay.prototype.update = function () {
           this.map.removeTile(tile.x, tile.y, this.foreground);
           this.moveRoom(tile.roomIndex, Rooms[tile.roomIndex].x - 1, Rooms[tile.roomIndex].y);
           this.game.camera.shake(0.008, 250);
+          this.resetInfoText.visible = true;
 
           return false;
         }
@@ -310,6 +320,7 @@ Gameplay.prototype.update = function () {
           this.map.removeTile(tile.x, tile.y, this.foreground);
           this.moveRoom(tile.roomIndex, Rooms[tile.roomIndex].x, Rooms[tile.roomIndex].y + 1);
           this.game.camera.shake(0.008, 250);
+          this.resetInfoText.visible = true;
 
           return false;
         }
@@ -323,6 +334,7 @@ Gameplay.prototype.update = function () {
           this.map.removeTile(tile.x, tile.y, this.foreground);
           this.moveRoom(tile.roomIndex, Rooms[tile.roomIndex].x, Rooms[tile.roomIndex].y - 1);
           this.game.camera.shake(0.008, 250);
+          this.resetInfoText.visible = true;
 
           return false;
         }
