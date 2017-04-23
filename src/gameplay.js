@@ -67,14 +67,19 @@ Gameplay.prototype.initializeRoomsOnMap = function(reset) {
   }
 
   if (reset) {
-    this.placeRoomOnMap(Rooms.startingRoom, Rooms[Rooms.startingRoom].x, Rooms[Rooms.startingRoom].y);
+    //this.placeRoomOnMap(Rooms.startingRoom, Rooms[Rooms.startingRoom].x, Rooms[Rooms.startingRoom].y);
+    //this.moveRoom(Rooms.startingRoom, Rooms[Rooms.startingRoom].x, Rooms[Rooms.startingRoom].y);
+    Rooms.forEach(function (room, index) {
+      if (index >= 6) {return;}
+      this.moveRoom(index, room.x, room.y);
+    }, this);
 
     this.game.camera.shake(0.008, 350);
   } else {
     var goalCount = 0;
 
     Rooms.forEach(function (room, index) {
-      this.placeRoomOnMap(index, room.x, room.y);
+      this.moveRoom(index, room.x, room.y);
 
       if (room.goal) {
         var newOrb = this.game.add.existing(new MagicOrb(this.game, (room.x + 0.5) * RoomSize.Width * 16, (room.y + 0.25) * RoomSize.Height * 16, goalCount));
