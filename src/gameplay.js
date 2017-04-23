@@ -82,7 +82,7 @@ Gameplay.prototype.initializeRoomsOnMap = function(reset) {
     }
   }
   Rooms.forEach(function (room, index) {
-    var blockTile = this.map.putTile((index === Rooms.startingRoom || room.goal) ? 5 : (59 + index), BlockOffsetX + Rooms[Rooms.startingRoom].x * RoomSize.Width + room.x, BlockOffsetY + Rooms[Rooms.startingRoom].y * RoomSize.Height + room.y, this.foreground);
+    var blockTile = this.map.putTile((index === Rooms.startingRoom || room.goal) ? (53 + (index - 6)) : (59 + index), BlockOffsetX + Rooms[Rooms.startingRoom].x * RoomSize.Width + room.x, BlockOffsetY + Rooms[Rooms.startingRoom].y * RoomSize.Height + room.y, this.foreground);
     blockTile.roomIndex = index;
   }, this);
 };
