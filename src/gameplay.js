@@ -246,9 +246,6 @@ Gameplay.prototype.create = function() {
   this.foreground = this.map.createLayer('Foreground');
   this.map.setCollisionByExclusion([0], true, this.foreground);
 
-  // sample text
-  this.game.add.bitmapText(16, 16, 'font', 'font', 8);
-
   // enable collision detections with map
   this.game.physics.enable(this.foreground, Phaser.Physics.ARCADE);
 
@@ -336,9 +333,18 @@ Gameplay.prototype.update = function () {
   }, this);
   this.game.physics.arcade.collide(this.player, this.magicOrbs, function (player, orb) {
     this.foundOrbs[orb.index] = true;
-    console.log(this.foundOrbs);
 
     orb.kill();
+
+    // if we've found all five orbs, we've won the puzzle
+    if (this.foundOrbs[0] && this.foundOrbs[1] && this.foundOrbs[2] && this.foundOrbs[3] && this.foundOrbs[4]) {
+      this.player.disableMovement = true;
+      this.player.facing = Directions.SOUTH;
+
+      this.game.time.events.add(1000, function () {
+        this.game.state.start('WinScreen');
+      }, this);
+    }
   }, undefined, this);
 
   if (this.scrolling === false && this.game.camera.view.contains(this.player.x, this.player.y) === false) {
