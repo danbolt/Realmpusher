@@ -81,6 +81,7 @@ TitleScreen.prototype.create = function() {
 
   var logo = this.game.add.image(this.game.width / 2 * -2, this.game.height / 4 + 16, 'logo');
   logo.anchor.set(0.5, 0.5);
+  logo.animations.add('flash', [0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0], 20, false);
 
   var infoText = this.game.add.bitmapText(this.game.width / 2, 200 + this.game.height / 3 * 2, 'font', 'arrow keys to move\n\n\nalign the blocks to step among the\nsmall worlds and find the magic orbs\n\n\npress enter to start', 8);
   infoText.align = 'center';
@@ -111,6 +112,7 @@ TitleScreen.prototype.create = function() {
   playerTween.onComplete.add(function () {
     this.game.time.events.remove(emitLoop);
     logoTween.start();
+    this.game.time.events.add(900, function () { logo.animations.play('flash'); }, this);
   }, this);
 
 

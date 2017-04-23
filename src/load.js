@@ -2,7 +2,7 @@ var Load = function () {
 	//
 };
 Load.prototype.preload = function() {
-  this.game.load.image('logo', 'asset/img/logo.png');
+  this.game.load.spritesheet('logo', 'asset/img/logo.png', 265, 49);
 
   this.game.load.spritesheet('test16x16', 'asset/img/16x16SquareSheet.png', 16, 16);
   this.game.load.image('test16x16_tile', 'asset/img/16x16SquareSheet.png');
