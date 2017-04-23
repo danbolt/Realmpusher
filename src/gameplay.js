@@ -33,6 +33,7 @@ Rooms.startingRoom = 6;
 
 var Gameplay = function () {
   this.player = null;
+  this.magicOrbs = null;
 };
 
 var isIndexAPushableBlock = function(index) {
@@ -70,8 +71,16 @@ Gameplay.prototype.initializeRoomsOnMap = function(reset) {
 
     this.game.camera.shake(0.008, 350);
   } else {
+    var goalCount = 0;
+
     Rooms.forEach(function (room, index) {
       this.placeRoomOnMap(index, room.x, room.y);
+
+      if (room.goal) {
+        var newOrb = this.game.add.existing(new MagicOrb(this.game, (room.x + 0.5) * RoomSize.Width * 16, (room.y + 0.25) * RoomSize.Height * 16, goalCount));
+        this.magicOrbs.push(newOrb);
+        goalCount++;
+      }
     }, this);
   }
 
@@ -228,6 +237,8 @@ Gameplay.prototype.create = function() {
   // closure context
   var that = this;
 
+  this.foundOrbs = [false, false, false, false, false];
+
   // create map
   this.map = this.game.add.tilemap('level1');
   this.map.addTilesetImage('sheet', 'test16x16_tile');
@@ -240,6 +251,8 @@ Gameplay.prototype.create = function() {
 
   // enable collision detections with map
   this.game.physics.enable(this.foreground, Phaser.Physics.ARCADE);
+
+  this.magicOrbs = [];
 
   this.initializeRoomsOnMap();
 
@@ -321,6 +334,12 @@ Gameplay.prototype.update = function () {
 
     return true;
   }, this);
+  this.game.physics.arcade.collide(this.player, this.magicOrbs, function (player, orb) {
+    this.foundOrbs[orb.index] = true;
+    console.log(this.foundOrbs);
+
+    orb.kill();
+  }, undefined, this);
 
   if (this.scrolling === false && this.game.camera.view.contains(this.player.x, this.player.y) === false) {
     this.scrolling = true;
@@ -331,4 +350,6 @@ Gameplay.prototype.update = function () {
 };
 Gameplay.prototype.shutdown = function () {
   this.player = null;
+  this.magicOrbs = null;
+  this.foundOrbs = [false, false, false, false, false];
 };
