@@ -8,6 +8,10 @@ Cutscene.prototype.create = function () {
 
   var cutsceneText = this.game.add.bitmapText(24, 162, 'font', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 8);
 
+  var skipMessage = this.game.add.bitmapText(2, 2, 'font', 'press [ESC] to skip', 8);
+  this.game.time.events.add(1900, function () { skipMessage.kill(); });
+  this.game.input.keyboard.addKey(Phaser.KeyCode.ESC).onUp.add(function () { this.game.state.start('TitleScreen'); }, this);
+
   var playCutscene = function (index) {
     index = index % this.lines.length;
 
