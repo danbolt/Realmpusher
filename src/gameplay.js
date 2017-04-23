@@ -247,6 +247,10 @@ Gameplay.prototype.create = function() {
 
   this.foundOrbs = [false, false, false, false, false];
 
+  this.game.input.keyboard.addKeyCapture(Phaser.KeyCode.DOWN);
+  this.game.input.keyboard.addKeyCapture(Phaser.KeyCode.UP);
+  this.game.input.keyboard.addKeyCapture(Phaser.KeyCode.SPACEBAR);
+
   // create map
   this.map = this.game.add.tilemap('level1');
   this.map.addTilesetImage('sheet', 'test16x16_tile');
