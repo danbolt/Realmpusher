@@ -222,7 +222,7 @@ Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
 
 Gameplay.prototype.tweenCameraToPlayersRoom = function (x, y) {
   var t = this.game.add.tween(this.game.camera);
-  t.to({ x: (16 * RoomSize.Width * x), y: (16 * RoomSize.Height * y) }, 300);
+  t.to({ x: (16 * RoomSize.Width * x), y: (16 * RoomSize.Height * y) }, 600);
   t.onComplete.add(function () { this.scrolling = false; this.player.disableMovement = false; }, this);
   t.start();
 };
