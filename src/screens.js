@@ -6,7 +6,7 @@ TitleScreen.prototype.create = function() {
   var logo = this.game.add.image(this.game.width / 2 * -2, this.game.height / 4 + 16, 'logo');
   logo.anchor.set(0.5, 0.5);
 
-  var infoText = this.game.add.bitmapText(this.game.width / 2, 200 + this.game.height / 3 * 2, 'font', 'arrow keys to move\n\n\nalign the blocks to step among the\nrealms and find the magic orbs\n\n\npress enter to start', 8);
+  var infoText = this.game.add.bitmapText(this.game.width / 2, 200 + this.game.height / 3 * 2, 'font', 'arrow keys to move\n\n\nalign the blocks to step among the\nsmall worlds and find the magic orbs\n\n\npress enter to start', 8);
   infoText.align = 'center';
   infoText.anchor.set(0.5);
 
@@ -74,12 +74,15 @@ var WinScreen = function () {
   //
 };
 WinScreen.prototype.create = function () {
-  this.game.add.bitmapText(16, 16, 'font', 'you win k', 8);
+  var infoText = this.game.add.bitmapText(this.game.width / 2, this.game.height / 2, 'font', 'you won! well done!\n\n\nPress enter to return to the title\n\nscreen.', 8);
+  infoText.align = 'center';
+  infoText.anchor.set(0.5);
 
   var startGameKey = this.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
   startGameKey.onUp.add(function () {
     this.game.input.keyboard.removeKey(startGameKey);
     this.game.state.start('TitleScreen');
+      SoundBank['select'].play();
   }, this);
 
   this.game.input.gamepad.onDownCallback = function (buttonCode) {
@@ -87,6 +90,7 @@ WinScreen.prototype.create = function () {
       this.game.state.start('TitleScreen');
       this.game.input.gamepad.onDownCallback = null;
       this.game.input.keyboard.removeKey(startGameKey);
+      SoundBank['select'].play();
     }
   };
 };
