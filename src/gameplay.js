@@ -246,6 +246,15 @@ Gameplay.prototype.create = function() {
   this.foreground = this.map.createLayer('Foreground');
   this.map.setCollisionByExclusion([0], true, this.foreground);
 
+  // push emitter
+  var emitter = this.game.add.emitter(0, 0, 30);
+  emitter.makeParticles('test16x16', [36]);
+  emitter.gravity = 0;
+  emitter.lifespan = 250;
+  emitter.setScale();
+  emitter.setRotation();
+  this.emitter = emitter;
+
   // enable collision detections with map
   this.game.physics.enable(this.foreground, Phaser.Physics.ARCADE);
 
@@ -296,6 +305,9 @@ Gameplay.prototype.update = function () {
           this.resetInfoText.visible = true;
 
           SoundBank['push' + ~~(Math.random() * 3)].play();
+          for (var i = 0; i < 2; i++) {
+            this.emitter.emitParticle(player.right, player.centerY);
+          }
 
           return false;
         }
@@ -312,6 +324,9 @@ Gameplay.prototype.update = function () {
           this.resetInfoText.visible = true;
 
           SoundBank['push' + ~~(Math.random() * 3)].play();
+          for (var i = 0; i < 2; i++) {
+            this.emitter.emitParticle(player.left, player.centerY);
+          }
 
           return false;
         }
@@ -328,6 +343,9 @@ Gameplay.prototype.update = function () {
           this.resetInfoText.visible = true;
 
           SoundBank['push' + ~~(Math.random() * 3)].play();
+          for (var i = 0; i < 2; i++) {
+            this.emitter.emitParticle(player.centerX, player.bottom);
+          }
 
           return false;
         }
@@ -344,6 +362,9 @@ Gameplay.prototype.update = function () {
           this.resetInfoText.visible = true;
 
           SoundBank['push' + ~~(Math.random() * 3)].play();
+          for (var i = 0; i < 2; i++) {
+            this.emitter.emitParticle(player.centerX, player.top);
+          }
 
           return false;
         }
@@ -379,4 +400,5 @@ Gameplay.prototype.shutdown = function () {
   this.player = null;
   this.magicOrbs = null;
   this.foundOrbs = [false, false, false, false, false];
+  this.emitter = null;
 };
