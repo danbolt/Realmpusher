@@ -73,8 +73,11 @@ TitleScreen.prototype.create = function() {
 var WinScreen = function () {
   //
 };
+WinScreen.prototype.init = function (winTime) {
+  this.winTime = winTime ? winTime : '???';
+}
 WinScreen.prototype.create = function () {
-  var infoText = this.game.add.bitmapText(this.game.width / 2, this.game.height / 2, 'font', 'you won! well done!\n\n\nPress enter to return to the title\n\nscreen.', 8);
+  var infoText = this.game.add.bitmapText(this.game.width / 2, this.game.height / 2, 'font', 'you won! well done!\n\n\nyour time was ' + this.winTime +' seconds\n\nthink you can top it?\n\n\nPress enter to return to the title\n\nscreen.', 8);
   infoText.align = 'center';
   infoText.anchor.set(0.5);
 

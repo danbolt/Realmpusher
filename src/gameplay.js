@@ -243,6 +243,8 @@ Gameplay.prototype.create = function() {
   // closure context
   var that = this;
 
+  this.startTime = this.game.time.now;
+
   this.foundOrbs = [false, false, false, false, false];
 
   // create map
@@ -390,7 +392,7 @@ Gameplay.prototype.update = function () {
       this.player.facing = Directions.SOUTH;
 
       this.game.time.events.add(1000, function () {
-        this.game.state.start('WinScreen');
+        this.game.state.start('WinScreen', true, false, ~~((this.game.time.now - this.startTime) / 1000));
       }, this);
     }
   }, undefined, this);
