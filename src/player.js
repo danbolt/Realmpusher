@@ -16,6 +16,8 @@ var Player = function(game, x, y) {
 
   this.facing = Directions.SOUTH;
 
+  this.gamepad = this.game.input.gamepad.pad1;
+
   this.game.physics.enable(this, Phaser.Physics.ARCADE);
   this.body.setSize(10, 8);
   this.body.offset.x = 3;
@@ -27,11 +29,11 @@ Player.prototype.constructor = Player;
 Player.prototype.update = function () {
   if (this.disableMovement === false)
   {
-    if (this.game.input.keyboard.isDown(Phaser.KeyCode.RIGHT)) {
+    if (this.game.input.keyboard.isDown(Phaser.KeyCode.RIGHT) || this.gamepad.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT) || this.gamepad.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) > 0.3) {
       this.body.velocity.x = this.walkSpeed;
 
       this.facing = Directions.EAST;
-    } else if (this.game.input.keyboard.isDown(Phaser.KeyCode.LEFT)) {
+    } else if (this.game.input.keyboard.isDown(Phaser.KeyCode.LEFT) || this.gamepad.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT) || this.gamepad.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) < -0.3) {
       this.body.velocity.x = -this.walkSpeed;
 
       this.facing = Directions.WEST;
@@ -39,11 +41,11 @@ Player.prototype.update = function () {
       this.body.velocity.x = 0;
     }
 
-    if (this.game.input.keyboard.isDown(Phaser.KeyCode.DOWN)) {
+    if (this.game.input.keyboard.isDown(Phaser.KeyCode.DOWN) || this.gamepad.isDown(Phaser.Gamepad.XBOX360_DPAD_DOWN) || this.gamepad.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) > 0.3) {
       this.body.velocity.y = this.walkSpeed;
 
       this.facing = Directions.SOUTH;
-    } else if (this.game.input.keyboard.isDown(Phaser.KeyCode.UP)) {
+    } else if (this.game.input.keyboard.isDown(Phaser.KeyCode.UP) || this.gamepad.isDown(Phaser.Gamepad.XBOX360_DPAD_UP) || this.gamepad.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) < -0.3) {
       this.body.velocity.y = -this.walkSpeed;
 
       this.facing = Directions.NORTH;
