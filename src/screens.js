@@ -15,6 +15,7 @@ TitleScreen.prototype.create = function() {
   copyrightText.align = 'right';
 
   var playerDupe = this.game.add.sprite(-16, this.game.height / 4 + 16, 'test16x16', 0);
+  playerDupe.addChild(this.game.add.sprite(10, -8, 'test16x16', 58 + ~~(Math.random() * 6)));
   playerDupe.anchor.set(0.5, 0.5);
   playerDupe.animations.add('run', [22, 23], 4, true);
   playerDupe.animations.play('run');
@@ -30,8 +31,25 @@ TitleScreen.prototype.create = function() {
     copyrightTween.start();
   }, this);
   var playerTween = this.game.add.tween(playerDupe);
-  playerTween.to( {x: this.game.width + 17}, 1350);
-  playerTween.onComplete.add(function () { logoTween.start(); }, this);
+  playerTween.to( {x: this.game.width + 17}, 2000);
+  playerTween.onComplete.add(function () {
+    this.game.time.events.remove(emitLoop);
+    logoTween.start();
+  }, this);
+
+
+  var emitter = this.game.add.emitter(0, 0, 30);
+  emitter.makeParticles('test16x16', [36]);
+  emitter.gravity = 0;
+  emitter.lifespan = 250;
+  emitter.setScale();
+  emitter.setRotation();
+  this.emitter = emitter;
+  var emitLoop = this.game.time.events.loop(200, function () { 
+    for (var i = 0; i < 2; i++) {
+      emitter.emitParticle(playerDupe.left + 4, playerDupe.bottom);
+    }
+  }, this);
 
   var startGameKey = this.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
   startGameKey.onUp.add(function () {
