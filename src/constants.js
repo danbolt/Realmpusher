@@ -12,7 +12,8 @@ var soundEffectsToLoad = ['push0',
                           'push2',
                           'item_get',
                           'reset',
-                          'select'
+                          'select',
+                          'blip'
                           ];
 /*
 var soundEffectsToLoad = ['alarm',

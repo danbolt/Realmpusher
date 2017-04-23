@@ -1,3 +1,47 @@
+var Cutscene = function () {
+  this.lines = ['my child! my magic orbs got\n\nscattered among the tiny worlds.\n\nI need you to get them back\n\nfor me.', 'But Dad! the tiny worlds are\n\nseparated between time and space.\n\nHow will I travel between them?', 'Use the realm stones my child!\n\nPush them to make pathways from\n\nwhere the worlds meet.\n\nMake me proud!'];
+};
+
+Cutscene.prototype.create = function () {
+  var cutsceneImage = this.game.add.sprite(0, 40, 'cutscene', 0);
+
+  var cutsceneText = this.game.add.bitmapText(24, 162, 'font', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 8);
+
+  var playCutscene = function (index) {
+    index = index % this.lines.length;
+
+    cutsceneImage.frame = index;
+    cutsceneText.text = this.lines[index];
+
+    cutsceneText.children.forEach(function (letter) {
+      letter.renderable = false;
+    }, this);
+
+    var bipCount = 0;
+    var letterLoop = this.game.time.events.loop(120, function () {
+      cutsceneText.children[bipCount].renderable = true;
+      bipCount++;
+      SoundBank['blip'].play();
+
+      if (bipCount === cutsceneText.children.length) {
+        this.game.time.events.remove(letterLoop);
+        
+        this.game.time.events.add(1000, function () {
+          if (index < 2) {
+            playCutscene.call(this, index + 1);
+          } else {
+            this.game.time.events.add(700, function () {
+              this.game.state.start('TitleScreen');
+            }, this);
+          }
+        }, this);
+      }
+    }, this);
+  };
+
+  playCutscene.call(this, 0);
+};
+
 var TitleScreen = function () {
   //
 };

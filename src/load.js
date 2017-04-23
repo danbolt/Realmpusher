@@ -7,6 +7,8 @@ Load.prototype.preload = function() {
   this.game.load.spritesheet('test16x16', 'asset/img/16x16SquareSheet.png', 16, 16);
   this.game.load.image('test16x16_tile', 'asset/img/16x16SquareSheet.png');
 
+  this.game.load.spritesheet('cutscene', 'asset/img/cutscene.png', 320, 100);
+
   this.game.load.audio('background_melody', 'asset/bgm/tofu-of-a-viking.mp3');
 
   soundEffectsToLoad.forEach(function (sname) {
@@ -24,5 +26,5 @@ Load.prototype.create = function() {
     SoundBank[sname].volume = 0.45;
   }, this);
 
- 	this.game.state.start('TitleScreen');
+ 	this.game.state.start('Cutscene');
 };
