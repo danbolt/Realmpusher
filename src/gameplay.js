@@ -98,34 +98,26 @@ Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
     var room = Rooms[index];
 
     if (direction === Directions.EAST) {
-      for (var iy = 0; iy < RoomSize.Height; iy++) {
-        if (this.map.getTile(room.x * (RoomSize.Width) + (RoomSize.Width - 1), room.y * RoomSize.Height + iy, this.foreground, true).index === 8) {
-          this.map.removeTile(room.x * (RoomSize.Width) + (RoomSize.Width - 1), room.y * RoomSize.Height + iy, this.foreground);
-        }
+      for (var iy = 4; iy < 9; iy++) {
+        this.map.removeTile(room.x * (RoomSize.Width) + (RoomSize.Width - 1), room.y * RoomSize.Height + iy, this.foreground);
       }
     }
 
     if (direction === Directions.WEST) {
-      for (var iy = 0; iy < RoomSize.Height; iy++) {
-        if (this.map.getTile(room.x * RoomSize.Width, room.y * RoomSize.Height + iy, this.foreground, true).index === 8) {
-          this.map.removeTile(room.x * RoomSize.Width, room.y * RoomSize.Height + iy, this.foreground);
-        }
+      for (var iy = 4; iy < 9; iy++) {
+        this.map.removeTile(room.x * RoomSize.Width, room.y * RoomSize.Height + iy, this.foreground);
       }
     }
 
     if (direction === Directions.SOUTH) {
-      for (var ix = 0; ix < RoomSize.Width; ix++) {
-        if (this.map.getTile(room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height) + (RoomSize.Height - 1), this.foreground, true).index === 8) {
-          this.map.removeTile(room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height) + (RoomSize.Height - 1), this.foreground);
-        }
+      for (var ix = 8; ix < 12; ix++) {
+        this.map.removeTile(room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height) + (RoomSize.Height - 1), this.foreground);
       }
     }
 
     if (direction === Directions.NORTH) {
-      for (var ix = 0; ix < RoomSize.Width; ix++) {
-        if (this.map.getTile(room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height), this.foreground, true).index === 8) {
-          this.map.removeTile(room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height), this.foreground);
-        }
+      for (var ix = 8; ix < 12; ix++) {
+        this.map.removeTile(room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height), this.foreground);
       }
     }
   };
@@ -136,7 +128,7 @@ Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
     if (direction === Directions.EAST) {
       for (var iy = 0; iy < RoomSize.Height; iy++) {
         if (this.map.getTile(room.x * (RoomSize.Width) + (RoomSize.Width - 1), room.y * RoomSize.Height + iy, this.foreground, true).index === -1) {
-          this.map.putTile(8, room.x * (RoomSize.Width) + (RoomSize.Width - 1), room.y * RoomSize.Height + iy, this.foreground);
+          this.map.putTile(this.map.getTile(room.x * (RoomSize.Width), room.y * RoomSize.Height, this.foreground, true).index, room.x * (RoomSize.Width) + (RoomSize.Width - 1), room.y * RoomSize.Height + iy, this.foreground);
         }
       }
     }
@@ -144,7 +136,7 @@ Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
     if (direction === Directions.WEST) {
       for (var iy = 0; iy < RoomSize.Height; iy++) {
         if (this.map.getTile(room.x * RoomSize.Width, room.y * RoomSize.Height + iy, this.foreground, true).index === -1) {
-          this.map.putTile(8, room.x * RoomSize.Width, room.y * RoomSize.Height + iy, this.foreground);
+          this.map.putTile(this.map.getTile(room.x * (RoomSize.Width), room.y * RoomSize.Height, this.foreground, true).index, room.x * RoomSize.Width, room.y * RoomSize.Height + iy, this.foreground);
         }
       }
     }
@@ -152,7 +144,7 @@ Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
     if (direction === Directions.SOUTH) {
       for (var ix = 0; ix < RoomSize.Width; ix++) {
         if (this.map.getTile(room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height) + (RoomSize.Height - 1), this.foreground, true).index === -1) {
-          this.map.putTile(8, room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height) + (RoomSize.Height - 1), this.foreground);
+          this.map.putTile(this.map.getTile(room.x * (RoomSize.Width), room.y * RoomSize.Height, this.foreground, true).index, room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height) + (RoomSize.Height - 1), this.foreground);
         }
       }
     }
@@ -160,7 +152,7 @@ Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
     if (direction === Directions.NORTH) {
       for (var ix = 0; ix < RoomSize.Width; ix++) {
         if (this.map.getTile(room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height), this.foreground, true).index === -1) {
-          this.map.putTile(8, room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height), this.foreground);
+          this.map.putTile(this.map.getTile(room.x * (RoomSize.Width), room.y * RoomSize.Height, this.foreground, true).index, room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height), this.foreground);
         }
       }
     }
