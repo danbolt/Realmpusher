@@ -126,7 +126,7 @@ Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
     var room = Rooms[index];
 
     if (direction === Directions.EAST) {
-      for (var iy = 0; iy < RoomSize.Height; iy++) {
+      for (var iy = 4; iy < 9; iy++) {
         if (this.map.getTile(room.x * (RoomSize.Width) + (RoomSize.Width - 1), room.y * RoomSize.Height + iy, this.foreground, true).index === -1) {
           this.map.putTile(this.map.getTile(room.x * (RoomSize.Width), room.y * RoomSize.Height, this.foreground, true).index, room.x * (RoomSize.Width) + (RoomSize.Width - 1), room.y * RoomSize.Height + iy, this.foreground);
         }
@@ -134,7 +134,7 @@ Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
     }
 
     if (direction === Directions.WEST) {
-      for (var iy = 0; iy < RoomSize.Height; iy++) {
+      for (var iy = 4; iy < 9; iy++) {
         if (this.map.getTile(room.x * RoomSize.Width, room.y * RoomSize.Height + iy, this.foreground, true).index === -1) {
           this.map.putTile(this.map.getTile(room.x * (RoomSize.Width), room.y * RoomSize.Height, this.foreground, true).index, room.x * RoomSize.Width, room.y * RoomSize.Height + iy, this.foreground);
         }
@@ -142,7 +142,7 @@ Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
     }
 
     if (direction === Directions.SOUTH) {
-      for (var ix = 0; ix < RoomSize.Width; ix++) {
+      for (var ix = 8; ix < 12; ix++) {
         if (this.map.getTile(room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height) + (RoomSize.Height - 1), this.foreground, true).index === -1) {
           this.map.putTile(this.map.getTile(room.x * (RoomSize.Width), room.y * RoomSize.Height, this.foreground, true).index, room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height) + (RoomSize.Height - 1), this.foreground);
         }
@@ -150,7 +150,7 @@ Gameplay.prototype.moveRoom = function(roomIndex, destX, destY) {
     }
 
     if (direction === Directions.NORTH) {
-      for (var ix = 0; ix < RoomSize.Width; ix++) {
+      for (var ix = 8; ix < 12; ix++) {
         if (this.map.getTile(room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height), this.foreground, true).index === -1) {
           this.map.putTile(this.map.getTile(room.x * (RoomSize.Width), room.y * RoomSize.Height, this.foreground, true).index, room.x * (RoomSize.Width) + ix, room.y * (RoomSize.Height), this.foreground);
         }
