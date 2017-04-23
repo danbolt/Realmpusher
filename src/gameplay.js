@@ -79,7 +79,8 @@ Gameplay.prototype.initializeRoomsOnMap = function(reset) {
     var goalCount = 0;
 
     Rooms.forEach(function (room, index) {
-      this.moveRoom(index, room.x, room.y);
+      // Commented out: we now pre-generate the rooms from the tilemap
+      //this.moveRoom(index, room.x, room.y);
 
       if (room.goal) {
         var newOrb = this.game.add.existing(new MagicOrb(this.game, (room.x + 0.5) * RoomSize.Width * 16, (room.y + 0.25) * RoomSize.Height * 16, goalCount));
@@ -90,8 +91,8 @@ Gameplay.prototype.initializeRoomsOnMap = function(reset) {
   }
 
 
-  for (var xi = 0; xi < 6; xi++) {
-    for (var yi = 0; yi < 6; yi++) {
+  for (var xi = 0; xi < 7; xi++) {
+    for (var yi = 0; yi < 7; yi++) {
       this.map.removeTile(BlockOffsetX + Rooms[Rooms.startingRoom].x * RoomSize.Width + xi, BlockOffsetY + Rooms[Rooms.startingRoom].y * RoomSize.Height + yi, this.foreground);
     }
   }
