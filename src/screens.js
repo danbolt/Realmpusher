@@ -4,14 +4,42 @@ var Cutscene = function () {
 
 Cutscene.prototype.create = function () {
   var cutsceneImage = this.game.add.sprite(0, 40, 'cutscene', 0);
+  var cutsceneImage2 = this.game.add.sprite(0, 40, 'cutscene', 1);
 
   var cutsceneText = this.game.add.bitmapText(24, 162, 'font', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 8);
 
   var playCutscene = function (index) {
     index = index % this.lines.length;
 
-    cutsceneImage.frame = index;
+    cutsceneImage.frame = index * 2;
+    cutsceneImage2.frame = index * 2 + 1;
     cutsceneText.text = this.lines[index];
+
+    // this is 'global' to make sure the third frame doesn't bob.
+    var floatWorldsTween = null;
+
+    // cutscene-specific tweens
+    if (index === 0) {
+      cutsceneImage2.x = 170;
+      var moveDadTween = this.game.add.tween(cutsceneImage2);
+      moveDadTween.to( { x: 0 }, 1200);
+      moveDadTween.onComplete.add(function () {
+        moveDadTween.manager.remove(moveDadTween);
+      }, this);
+      moveDadTween.start();
+    } else if (index === 1) {
+      floatWorldsTween = this.game.add.tween(cutsceneImage2);
+      floatWorldsTween.to({ y: [cutsceneImage2.y + 4, cutsceneImage2.y] }, 1700, Phaser.Easing.Cubic.InOut, false, 100, -1);
+      floatWorldsTween.start();
+    } else if (index === 2) {
+      cutsceneImage2.x = -200;
+      var moveBlocksTween = this.game.add.tween(cutsceneImage2);
+      moveBlocksTween.to( { x: 0 }, 1200);
+      moveBlocksTween.onComplete.add(function () {
+        moveBlocksTween.manager.remove(moveBlocksTween);
+      }, this);
+      moveBlocksTween.start();
+    }
 
     cutsceneText.children.forEach(function (letter) {
       letter.renderable = false;
@@ -29,6 +57,10 @@ Cutscene.prototype.create = function () {
         this.game.time.events.add(1000, function () {
           if (index < 2) {
             playCutscene.call(this, index + 1);
+            if (floatWorldsTween) {
+              floatWorldsTween.stop();
+              cutsceneImage2.y = 40;
+            }
           } else {
             this.game.time.events.add(700, function () {
               this.game.state.start('TitleScreen');
