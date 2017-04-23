@@ -24,6 +24,8 @@ var MagicOrb = function (game, x, y, index) {
   }, this);
 
   this.events.onKilled.add(function () {
+    SoundBank['item_get'].play();
+
     this.game.time.events.remove(emitLoop);
     emitter.lifespan = 1000;
     for (var i = 0; i < 10; i++) {

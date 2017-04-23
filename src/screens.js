@@ -12,12 +12,14 @@ TitleScreen.prototype.create = function() {
 
   var startGameKey = this.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
   startGameKey.onUp.add(function () {
+    SoundBank['select'].play();
     this.game.input.keyboard.removeKey(startGameKey);
     this.game.state.start('Gameplay');
   }, this);
 
   this.game.input.gamepad.onDownCallback = function (buttonCode) {
     if (buttonCode === Phaser.Gamepad.XBOX360_START) {
+      SoundBank['select'].play();
       this.game.state.start('Gameplay');
       this.game.input.gamepad.onDownCallback = null;
       this.game.input.keyboard.removeKey(startGameKey);

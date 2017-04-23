@@ -7,7 +7,13 @@ var Directions = {
   COUNT : 4,
 };
 
-var soundEffectsToLoad = [];
+var soundEffectsToLoad = ['push0',
+                          'push1',
+                          'push2',
+                          'item_get',
+                          'reset',
+                          'select'
+                          ];
 /*
 var soundEffectsToLoad = ['alarm',
                           'bip',

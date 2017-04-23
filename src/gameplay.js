@@ -273,6 +273,7 @@ Gameplay.prototype.create = function() {
         (this.player.y < ((Rooms[Rooms.startingRoom].y + 1) * RoomSize.Height * 16) - 32)) {
       this.initializeRoomsOnMap(true);
       this.resetInfoText.visible = false;
+      SoundBank['reset'].play();
 
       this.game.camera.shake(0.008, 250);
     }
@@ -294,6 +295,8 @@ Gameplay.prototype.update = function () {
           this.game.camera.shake(0.008, 250);
           this.resetInfoText.visible = true;
 
+          SoundBank['push' + ~~(Math.random() * 3)].play();
+
           return false;
         }
       }
@@ -307,6 +310,8 @@ Gameplay.prototype.update = function () {
           this.moveRoom(tile.roomIndex, Rooms[tile.roomIndex].x - 1, Rooms[tile.roomIndex].y);
           this.game.camera.shake(0.008, 250);
           this.resetInfoText.visible = true;
+
+          SoundBank['push' + ~~(Math.random() * 3)].play();
 
           return false;
         }
@@ -322,6 +327,8 @@ Gameplay.prototype.update = function () {
           this.game.camera.shake(0.008, 250);
           this.resetInfoText.visible = true;
 
+          SoundBank['push' + ~~(Math.random() * 3)].play();
+
           return false;
         }
       }
@@ -335,6 +342,8 @@ Gameplay.prototype.update = function () {
           this.moveRoom(tile.roomIndex, Rooms[tile.roomIndex].x, Rooms[tile.roomIndex].y - 1);
           this.game.camera.shake(0.008, 250);
           this.resetInfoText.visible = true;
+
+          SoundBank['push' + ~~(Math.random() * 3)].play();
 
           return false;
         }
